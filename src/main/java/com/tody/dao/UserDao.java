@@ -1,13 +1,19 @@
 package com.tody.dao;
 
+import com.tody.util.connection.ConnectionMaker;
+import com.tody.util.connection.NConnectionMaker;
 import com.tody.vo.User;
 
 import java.sql.*;
 
-public abstract class UserDao {
-    protected abstract Connection getConnection() throws SQLException; // 추상 클래스 메소드로 다른 클래스에서 상속을 받아 확장이 가능하다.
+public class UserDao {
+
+    private ConnectionMaker connectionMaker;
+    public UserDao(ConnectionMaker connectionMaker){
+        this.connectionMaker = connectionMaker; // 파라미터로 인터페이스를 받아오도록 함. ConnectionMaker 의 구현체중 아무것이나 받아도 상관 없다는것임.
+    }
     public void add(User user) throws SQLException {
-        Connection conn = getConnection();
+        Connection conn = this.connectionMaker.makeNewConnection();
         PreparedStatement pstmt = conn.prepareStatement(
                 "INSERT INTO USER(id, name, password) values(?, ?, ?)"
         );
@@ -23,7 +29,7 @@ public abstract class UserDao {
     }
 
     public User get(String id) throws SQLException {
-        Connection conn = getConnection();
+        Connection conn = this.connectionMaker.makeNewConnection();
         PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM USER WHERE ID = ?");
 
         pstmt.setString(1, id);

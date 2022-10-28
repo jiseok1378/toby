@@ -1,15 +1,15 @@
 package com.tody;
 
-import com.tody.dao.NUserDao;
 import com.tody.dao.UserDao;
+import com.tody.util.connection.NConnectionMaker;
 import com.tody.vo.User;
 
 import java.sql.*;
 
 public class Toby {
     public static void main(String[] args) throws SQLException {
-
-        UserDao dao = new NUserDao(); // N사의 Connection 객체를 사용하는 UserDao
+        NConnectionMaker nConnectionMaker = new NConnectionMaker();
+        UserDao dao = new UserDao(nConnectionMaker); // N사의 Connection 객체를 사용하는 UserDao
 
         User user1 = new User();
         user1.setName("test");
